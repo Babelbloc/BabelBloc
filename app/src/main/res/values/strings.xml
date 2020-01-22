@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">BabelBloc</string>
+    <!--  item_perso -->
+    <string name="imageDescription">Image usine</string>
+
+    <!--  Dialog Ajout -->
+    <string name="dialAddOK">Compte ajouté.</string>
+    <string name="dialAddErreur">Erreur d\'ajout, l\'identificateur est déjà utilisé.</string>
+
+    <!--  Dialog confirmation suppression -->
+    <string name="dialSupTitre">Suppression :</string>
+    <string name="TitreErreur">Erreur :</string>
+    <string name="dialConnTitre">Connexion :</string>
+    <string name="dialConnMessage">Voulez-vous vous connecter ?</string>
+    <string name="dialSupMessage">Confirmez-vous la suppression ?</string>
+    <string name="dialSupBtnOUI">OUI</string>
+    <string name="dialConnectOUI">OUI</string>
+    <string name="dialConnectNON">NON</string>
+    <string name="dialSupBtnNON">NON</string>
+    <string name="dialSupValidation">Compte d\'identificateur %1$s supprimé.</string>
+    <string name="dialSupEchec">Echec de la suppression du compte d\'identificateur %1$s.</string>
+    <string name="Mot_de_passe">Mot de passe </string>
+    <!-- AlertBox -->
+    <string name="AffichageListe">"Problème lors de l'affichage de la liste"</string>
+    <string name="Connection_Internet">"Connexion internet requise"</string>
+
+    <string name="Nbr_Fournisseur">"Nombre de Fournisseur present dans la table F: "</string>
+    <string name="AppName">BabelBloc</string>
+    <string name="mdp_compte">Mot de passe</string>
+    <string name="nom_compte">Nom</string>
+    <string name="prenom_compte">Prenom</string>
+    <string name="identifiant_compte">Identifiant</string>
+    <string name="dialidentenfiant_OK">Identifiant correct</string>
+    <string name="dialidentifiant_KO">Identifiant inconnu</string>
+</resources>
