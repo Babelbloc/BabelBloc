@@ -62,5 +62,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo" />
 
+    <ListView
+        android:id="@+id/lstest"
+        android:layout_width="425dp"
+        android:layout_height="375dp"
+        tools:layout_editor_absoluteX="64dp"
+        tools:layout_editor_absoluteY="343dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

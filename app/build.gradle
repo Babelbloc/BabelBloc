@@ -9,11 +9,13 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            multiDexKeepFile file('multidex-main-dex-list.txt')
         }
     }
 }
@@ -25,10 +27,12 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    implementation files('libs/poi-3.17.jar')
-    implementation files('libs/poi-ooxml-3.17.jar')
-    implementation files('libs/poi-ooxml-schemas-3.17.jar')
-    implementation files('libs/xmlbeans-2.6.0.jar')
+//    implementation files('libs/poi-3.17.jar')
+//    implementation files('libs/poi-ooxml-3.17.jar')
+//    implementation files('libs/poi-ooxml-schemas-3.17.jar')
+   // implementation files('libs/xmlbeans-2.6.0.jar')
+    implementation 'com.android.support:multidex:1.03'
+    implementation 'androidx.multidex:multidex:2.0.1'
 
 
 }

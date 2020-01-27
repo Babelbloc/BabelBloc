@@ -13,19 +13,17 @@ import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-
-import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,12 +35,16 @@ public class MainActivity extends AppCompatActivity {
     private static final String TABLE_P_KEY = "123";
     SQLite sqLite ;
     boolean connexion = false;
+    int i =0;
+    int retour =0;
 
 
     ArrayPersonnelAdapter arrayPersonnelAdapter;
     ArrayList<Personnel> arrayPersonnel = new ArrayList<Personnel>();
+    ArrayList<String> arrayList = new ArrayList<>();
     ListView listeView;
-    ListView lsView;
+    ListView lsTest;
+    List<String> strings;
 
 
     @Override
@@ -52,10 +54,12 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
     try {
     sqLite =new SQLite(getApplicationContext(),null,null,1);
+
     alertB = new AlertDialog.Builder(this);
 
     final Button[] ajouter = new Button[1];
     listeView = findViewById(R.id.lsView);
+    lsTest = findViewById(R.id.lstest);
     int layoutID = R.layout.item_perso;
     listeView.setAdapter(arrayPersonnelAdapter);
 
@@ -65,20 +69,74 @@ public class MainActivity extends AppCompatActivity {
 
     arrayPersonnelAdapter = new ArrayPersonnelAdapter(this,layoutID,arrayPersonnel);
     listeView.setAdapter(arrayPersonnelAdapter);
+    final ArrayAdapter<String> arrayListAdapter=   new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,arrayList);
+    lsTest.setAdapter(arrayListAdapter);
 
     final EditText etPass= findViewById(R.id.Et_Pass);
     final boolean[] conn = {false};
 
        AfficherListe();
-//        File file = new File( getApplicationContext().getFilesDir(),"test");
-//        FileInputStream execlfile = new FileInputStream(new File("/storage/self/primary/BabelBLOC/babelBLOCconfigFR.xlsx"));
-//        Workbook workbook = new HSSFWorkbook(execlfile);
-//        Sheet datasheet = workbook.getSheet("Type");
-//        Cell cell = datasheet.getRow(0).getCell(1);
-//        alertB.setMessage(cell.getStringCellValue());
 
-        Excel excel = new Excel(getApplicationContext(),null,null,1);
-        excel.LireExcel();
+       new Thread(new Runnable() {
+           @Override
+           public void run() {
+               try{
+                   Excel excel = new Excel();
+                   strings= excel.LireExcel();
+                   runOnUiThread(new Runnable() {
+                       @Override
+                       public void run() {
+                           do{
+                               if(strings.get(i).equals("Text")) {
+                                   retour = sqLite.AjouterQuestion(strings.get(i+1),strings.get(i+2));
+                               }
+                               if(strings.get(i).equals("TextQCU"))
+                               if(retour <0){
+                                   runOnUiThread(new Runnable() {
+                                       @Override
+                                       public void run() {
+                                           try{
+
+                                           alertB.setTitle("Question");
+                                           switch (retour) {
+                                               case -3:
+                                                   alertB.setMessage("Identifiant déjà saisi").show();
+                                                   break;
+
+                                               case -2:
+                                                   alertB.setMessage("Problème lors de la création du compte").show();
+                                                   break;
+                                               case -1:
+                                                   alertB.setMessage("Compte déjà crée").show();
+                                                   break;
+                                               case 1:
+                                                   alertB.setMessage("Creation du compte réussi").show();
+                                           }
+
+                                       } catch (Exception e) {
+                                           alertB.setTitle(R.string.TitreErreur);
+                                           alertB.setMessage(e.getMessage());
+                                       }
+
+                                   }
+                                   });
+                               }
+                               arrayList.add(strings.get(i));
+                               arrayListAdapter.notifyDataSetChanged();
+                               i++;
+                           }
+                           while (strings.size()> i);
+                           alertB.setMessage(String.valueOf(arrayList.size())).show();
+                       }
+                   });
+               }
+               catch (Exception e){
+                   alertB.setMessage(e.getMessage()).show();
+               }
+           }
+       }).start();
+
+
         listeView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override

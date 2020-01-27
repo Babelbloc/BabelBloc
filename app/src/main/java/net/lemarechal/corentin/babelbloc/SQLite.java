@@ -22,6 +22,13 @@ public class SQLite extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "Personnel";
     public static final String COLUMN_IDENTIFIANT = "Identifiant";
     public static final String COLUMN_NOM = "Nom";
+    public static final String COLUMN_QUESTION= "Question";
+    public static final String COLUMN_TYPE= "Type";
+    public static final String COLUMN_TYPE_QUESTION= "Type_Question";
+    public static final String COLUMN_TYPE_CHOIX= "Choix";
+    public static final String COLUMN_TYPE_CHOIX2= "Choix2";
+    public static final String COLUMN_TYPE_CHOIX3= "Choix3";
+    public static final String COLUMN_TYPE_CHOIX4= "Choix4";
     public static final String COLUMN_PRENOM = "Prenom";
     public static final String COLUMN_MDP= "Mdp";
 
@@ -32,19 +39,23 @@ public class SQLite extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
+
+            String CREATE_TABLE_QUESTION = "CREATE TABLE Question (Question VARCHAR(20) NOT NULL, Type_Question VARCHAR(20) NOT NULL);";
+            db.execSQL(CREATE_TABLE_QUESTION);
+            String CREATE_TABLE_QCU = "CREATE TABLE QCU (Question VARCHAR(20) NOT NULL, Choix VARCHAR(30),Choix2 VARCHAR(30),Choix3 VARCHAR(30),Choix4 VARCHAR(30));";
+            db.execSQL(CREATE_TABLE_QCU);
+            String CREATE_TABLE_QCM = "CREATE TABLE QCM (Question VARCHAR(20) NOT NULL, Choix VARCHAR(30),Choix2 VARCHAR(30),Choix3 VARCHAR(30),Choix4 VARCHAR(30));";
+            db.execSQL(CREATE_TABLE_QCM);
             String CREATE_TABLE = "CREATE TABLE Personnel (Nom VARCHAR(30) NOT NULL, Prenom VARCHAR(30) NOT NULL, Identifiant VARCHAR(30) NOT NULL, Mdp VARCHAR(45) NOT NULL);";
             db.execSQL(CREATE_TABLE);
             ContentValues values = new ContentValues();
-            // values.put(COLUMN_ID,personnel.getID());
             values.put(COLUMN_NOM, "admin");
             values.put(COLUMN_PRENOM, "admin");
             values.put(COLUMN_MDP, "admin");
             values.put(COLUMN_IDENTIFIANT, "admin");
             long count = db.insert(TABLE_NAME, null, values);
-
             if (count != -1)
                 db.setTransactionSuccessful();
-
         }
         catch (Exception e){
             e.printStackTrace();
@@ -161,6 +172,52 @@ public class SQLite extends SQLiteOpenHelper {
         e.getMessage();
         }
         return conn;
+    }
+
+    public int AjouterQuestion (String question, String type_question) {
+
+        SQLiteDatabase Db = getWritableDatabase();
+
+        Db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_QUESTION, question );
+            values.put(COLUMN_TYPE_QUESTION,type_question);
+            long count = Db.insert("Question", null, values);
+            if (count != -1)
+                Db.setTransactionSuccessful();
+            else
+                return -2;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Db.endTransaction();
+        }
+        return 1;
+    }
+    public int AjouterQCU (String question, String choix,String choix2,String choix3,String choix4) {
+
+        SQLiteDatabase Db = getWritableDatabase();
+
+        Db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_QUESTION, question);
+            values.put(COLUMN_TYPE_CHOIX,choix);
+            values.put(COLUMN_TYPE_CHOIX,choix2);
+            values.put(COLUMN_TYPE_CHOIX,choix3);
+            values.put(COLUMN_TYPE_CHOIX,choix4);
+            long count = Db.insert("QCU", null, values);
+            if (count != -1)
+                Db.setTransactionSuccessful();
+            else
+                return -2;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Db.endTransaction();
+        }
+        return 1;
     }
 
 }
