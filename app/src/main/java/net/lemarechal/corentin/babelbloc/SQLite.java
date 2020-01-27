@@ -5,9 +5,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.View;
 import android.widget.ListView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.sql.Array;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -39,7 +43,7 @@ public class SQLite extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
-
+            db.execSQL("create table if not exists drapeaux(data blob not null, code varchar(8) not null)");
             String CREATE_TABLE_QUESTION = "CREATE TABLE Question (Question VARCHAR(20) NOT NULL, Type_Question VARCHAR(20) NOT NULL);";
             db.execSQL(CREATE_TABLE_QUESTION);
             String CREATE_TABLE_QCU = "CREATE TABLE QCU (Question VARCHAR(20) NOT NULL, Choix VARCHAR(30),Choix2 VARCHAR(30),Choix3 VARCHAR(30),Choix4 VARCHAR(30));";
@@ -61,6 +65,63 @@ public class SQLite extends SQLiteOpenHelper {
             e.printStackTrace();
         }
 
+    }
+
+    public List<Drapeau> getDrapeaux() throws Exception {
+        List<Drapeau> drapeaux = new ArrayList<>();
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery("select * from drapeaux", null);
+            while (cursor.moveToNext()) {
+                byte[] bitmapdata = cursor.getBlob(0);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);
+                String code = cursor.getString(1);
+                drapeaux.add(new Drapeau(bitmap, code));
+            }
+            cursor.close();
+        } catch (Exception e){
+            throw e;
+        }
+        return drapeaux;
+    }
+
+    public Drapeau getDrapeau(String code) throws Exception {
+        Drapeau drapeau = null;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery("select data from drapeaux where code = '"+code+"'", null);
+            while (cursor.moveToNext()) {
+                byte[] bitmapdata = cursor.getBlob(0);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);
+                drapeau = new Drapeau(bitmap, code);
+            }
+            cursor.close();
+        } catch (Exception e){
+            throw e;
+        }
+        return drapeau;
+    }
+
+
+    public void reimportDrapeaux(File f) throws Exception {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            for (File lf : f.listFiles()){
+                if (lf.getName().endsWith(".png")) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath()+"/"+lf.getName());
+                    String code = lf.getName().replaceAll(".png", "");
+                    ByteArrayOutputStream blob = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, blob);
+                    byte[] bitmapdata = blob.toByteArray();
+                    ContentValues values = new ContentValues();
+                    values.put("data", bitmapdata);
+                    values.put("code", code);
+                    db.insert("drapeaux", null, values);
+                }
+            }
+        } catch (Exception e){
+            throw e;
+        }
     }
 
     @Override

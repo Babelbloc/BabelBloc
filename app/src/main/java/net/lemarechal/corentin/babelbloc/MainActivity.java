@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     public static final SQLite PARAM_SOURCE =null;
     AlertDialog.Builder alertB;
     private static final String TABLE_P_KEY = "123";
-    SQLite sqLite ;
+    public static SQLite sqLite ;
     boolean connexion = false;
     int i =0;
     int retour =0;
