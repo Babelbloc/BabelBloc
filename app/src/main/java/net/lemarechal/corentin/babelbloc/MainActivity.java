@@ -56,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             sqLite =new SQLite(getApplicationContext(),null,null,1);
             if (sqLite.getDrapeaux().isEmpty()) {
-                //File f = new File("/storage/D2C3-7B63/drapeaux/");
-                File f = new File("/storage/emulated/legacy/Drapeaux/");
+                File f = new File("/storage/D2C3-7B63/drapeaux/");
+                //File f = new File("/storage/emulated/legacy/Drapeaux/");
                 sqLite.reimportDrapeaux(f);
             }
 
